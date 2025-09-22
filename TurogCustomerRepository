@@ -1,0 +1,28 @@
+Turog Technologies Customer Repository
+
+package turogtechnologies.turogtechnologies.Repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import turogtechnologies.turogtechnologies.Database.Customer;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface CustomerRepository extends JpaRepository <Customer, Long>{
+
+    // Find customer by email
+    Optional<Customer> findByEmail(String email);
+
+    // Find customer by phone number
+    Optional<Customer> findByPhonenumber(String phonenumber);
+
+    // Find customers by first name
+    List<Customer> findByFirstname(String firstname);
+
+    // Find customers by last name
+    List<Customer> findByLastname(String lastname);
+
+    // Check if a customer exists by email
+    boolean existsByEmail(String email);
+}
+
