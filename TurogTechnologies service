@@ -1,0 +1,46 @@
+package turogtechnologies.turogtechnologies.Service;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import turogtechnologies.turogtechnologies.Database.Account;
+import turogtechnologies.turogtechnologies.Repository.AccountRepository;
+
+@Service
+@RequiredArgsConstructor
+public class AccountService {
+
+    private final AccountRepository accountRepository;
+
+    @Transactional
+    public Account deposit(Long accountId, Double amount) {
+        if (amount == null || amount <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deposit amount must be greater than zero");
+        }
+
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+
+        account.setBalance(account.getBalance() + amount);
+        return accountRepository.save(account);
+    }
+
+    @Transactional
+    public Account withdraw(Long accountId, Double amount) {
+        if (amount == null || amount <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Withdraw amount must be greater than zero");
+        }
+
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+
+        if (account.getBalance() < amount) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient balance");
+        }
+
+        account.setBalance(account.getBalance() - amount);
+        return accountRepository.save(account);
+    }
+}
