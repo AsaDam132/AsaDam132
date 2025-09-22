@@ -1,0 +1,27 @@
+package turogtechnologies.turogtechnologies.Database;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
+@Entity
+@Table(name = "accounts")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Account {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long accountId;
+
+    private String accountNumber;
+
+    private Double balance = 0.0;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+}
