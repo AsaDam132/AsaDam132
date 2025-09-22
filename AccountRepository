@@ -1,0 +1,38 @@
+package turogtechnologies.turogtechnologies.Repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import turogtechnologies.turogtechnologies.Database.Account;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+import java.util.Optional;
+
+public interface AccountRepository extends JpaRepository<Account, Long> {
+
+    // Find account by account number
+    Optional<Account> findByAccountNumber(String accountNumber);
+
+    // Find all accounts that belong to a customer
+    List<Account> findByCustomerId(Long customerId);
+
+    // Check if an account exists for a given customer
+    boolean existsByCustomerId(Long customerId);
+
+    // Custom query to update balance directly (without loading the entity)
+    @Modifying
+    @Query("UPDATE Account a SET a.balance = a.balance + :amount WHERE a.id = :accountId")
+    int deposit(@Param("accountId") Long accountId, @Param("amount") Double amount);
+
+    @Modifying
+    @Query("UPDATE Account a SET a.balance = a.balance - :amount WHERE a.id = :accountId")
+    int withdraw(@Param("accountId") Long accountId, @Param("amount") Double amount);
+
+    // Optional: Find all accounts with balance greater than a value
+    List<Account> findByBalanceGreaterThan(Double minBalance);
+
+    // Optional: Find all accounts with zero balance
+    List<Account> findByBalance(Double balance);
+}
